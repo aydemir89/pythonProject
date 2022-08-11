@@ -12,13 +12,14 @@ import bson
 datalistSPH = []
 dataListUOM = []
 dataListUOC = []
+dataListPDF = []
 dataListWSPH = []
 dataListWUOM = []
 dataListWUOC = []
 
 
 
-# (50,200), (0,100), (0,100), (50,500), (0,100),(0,100)
+
 
 dataListUser = []
 user ="62f3575ab51f8a773cde8ed1"
@@ -26,7 +27,9 @@ user ="62f3575ab51f8a773cde8ed1"
 
 for i in range(100):
     SPH = round(random.randint(50, 200))
+    PDF = 1
     dataListUser.append(user)
+    dataListPDF.append(PDF)
     if(SPH>50 and SPH <= 100):
         UOM = round(random.uniform(0,25),1)
         UOC = round(random.uniform(0,25),1)
@@ -57,6 +60,7 @@ for i in range(100):
         datalistSPH.append(SPH)
         dataListUOM.append(UOM)
         dataListUOC.append(UOC)
+
 
 
 
@@ -107,11 +111,11 @@ for i in range(100):
 
 
 
-d = [dataListUser,datalistSPH, dataListUOM,dataListUOC]
+d = [dataListUser,datalistSPH, dataListUOM,dataListUOC,dataListPDF]
 export_data = zip_longest(*d, fillvalue = '')
-with open('UsageOfServers.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
+with open('PdfUsageMemory.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
       wr = csv.writer(myfile)
-      wr.writerow(("UserId","SPH", "UOM","UOC"))
+      wr.writerow(("UserId","SPH", "UOM","UOC", "PDF"))
       wr.writerows(export_data)
 myfile.close()
 
