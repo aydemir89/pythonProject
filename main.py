@@ -8,7 +8,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 import json
-
 import rabbitmqReceiver
 import time
 
@@ -108,6 +107,7 @@ def main_(SPH,IsPdfSend):
             "SPH": SPH,
             "UOM": prediction1[0][0],
             "UOC": prediction[0][0],
+            "IsPdfSend": 0
         }
         out_file = open("data.json", "w")
         json_object = json.dump(dictionary, out_file, indent=6)
@@ -207,14 +207,15 @@ def main_(SPH,IsPdfSend):
         dataListUOM.append(prediction_pdf1)
         dataListUOC.append(prediction_pdf)
         dataListPDF.append(1)
-        d = [datalistSPH, dataListUOM, dataListUOC, dataListPDF]
+
+        """d = [datalistSPH, dataListUOM, dataListUOC, dataListPDF]
         export_data = zip_longest(*d, fillvalue='')
         with open('PdfUsageMemory.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
             wr = csv.writer(myfile)
             wr.writerow(("SPH", "UOM", "UOC", "PDF"))
             wr.writerows(export_data)
         myfile.close()
-
+        """
         plt.figure(figsize=(10, 10))
         sns.countplot(x='SPH', data=pdf_dataset)
         plt.title('Submission per hour Distribution')

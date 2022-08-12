@@ -25,9 +25,10 @@ dataListUser = []
 user ="62f3575ab51f8a773cde8ed1"
 
 
-for i in range(100):
+for i in range(300):
+
     SPH = round(random.randint(50, 200))
-    PDF = 1
+    PDF = round(random.randint(0,1))
     dataListUser.append(user)
     dataListPDF.append(PDF)
     if(SPH>50 and SPH <= 100):
@@ -113,7 +114,7 @@ for i in range(100):
 
 d = [dataListUser,datalistSPH, dataListUOM,dataListUOC,dataListPDF]
 export_data = zip_longest(*d, fillvalue = '')
-with open('PdfUsageMemory.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
+with open('dataSet.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
       wr = csv.writer(myfile)
       wr.writerow(("UserId","SPH", "UOM","UOC", "PDF"))
       wr.writerows(export_data)
