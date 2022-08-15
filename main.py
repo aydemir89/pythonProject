@@ -53,9 +53,6 @@ for i in dataListPDF:
 
 header = ['UserId', 'SPH', 'UOM', 'UOC',"PDF"]
 
-
-
-
 with open('PdfUsageMemory.csv', 'w', encoding='UTF8',newline='') as f:
     writer = csv.writer(f)
 
@@ -73,9 +70,6 @@ with open('UsageOfServers.csv', 'w', encoding='UTF8',newline='') as f:
 
     # write the data
     writer.writerows(dataRowPdf0)
-
-
-
 
 rabbitmqReceiver.main()
 lastValue = 0
@@ -273,14 +267,6 @@ def main_(SPH,IsPdfSend):
         dataListUOC.append(prediction_pdf)
         dataListPDF.append(1)
 
-        """d = [datalistSPH, dataListUOM, dataListUOC, dataListPDF]
-        export_data = zip_longest(*d, fillvalue='')
-        with open('PdfUsageMemory.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
-            wr = csv.writer(myfile)
-            wr.writerow(("SPH", "UOM", "UOC", "PDF"))
-            wr.writerows(export_data)
-        myfile.close()
-        """
         plt.figure(figsize=(10, 10))
         sns.countplot(x='SPH', data=pdf_dataset)
         plt.title('Submission per hour Distribution')

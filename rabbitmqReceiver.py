@@ -49,7 +49,7 @@ def main():
                 print("test ", x(),y())
                 isChanged = False
             else:
-                #print("Going to sleep ", isChanged)
+
                 time.sleep(0.2)
 
 
