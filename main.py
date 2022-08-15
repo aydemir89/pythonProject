@@ -10,6 +10,7 @@ from sklearn import metrics
 import json
 import rabbitmqReceiver
 import time
+import pika
 
 file = csv.DictReader(open('dataSet.csv','r'))
 datalistSPH = []
@@ -235,10 +236,11 @@ def main_(SPH,IsPdfSend):
 
         print("UOM")
         print(prediction_pdf1[0])
-        import createPdfFile
-        a=createPdfFile.b #a is byte
+        """ import createPdfFile"""
+        """a=createPdfFile.b""" #a is byte
         #1 Mib 1048.576 kb
         #boş pdf 993 byte
+        a = 993
         a = a * 0.001 #a byte to kb
         a = (a*993)/1048.756
         prediction_pdf[0] = prediction_pdf[0] / a  #a is kb
@@ -282,8 +284,18 @@ def main_(SPH,IsPdfSend):
         plt.title('Usage of cpu')
         plt.show()
 
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host='localhost'))
+        channel = connection.channel()
+        channel.queue_declare(queue="hello11")
 
+        with open('data.json') as file:
+            data = json.load(file)
 
+        channel.basic_publish(exchange='', routing_key='hello11', body=json.dumps(data))
+        print(" [x] Sent 'Hello World!'")
+
+        connection.close()
 
 while (True):
     time.sleep(1)
@@ -291,4 +303,6 @@ while (True):
         lastValue = rabbitmqReceiver.x
         pdfValue = rabbitmqReceiver.y
         main_(lastValue,pdfValue)
+
+
 
