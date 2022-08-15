@@ -25,27 +25,51 @@ for col in file:
     dataListUOM.append(col['UOM'])
     dataListUOC.append(col['UOC'])
     dataListPDF.append(col['PDF'])
+
 count =-1
-flag = 0
+data = []
+dataTemp = []
+dataRowPdf1 = []
+dataRowPdf0 = []
 
-def delete():
-    del dataListPDF[:]
+def appendList(dataRow):
+    data.append("62f3575ab51f8a773cde8ed1")
+    data.append(datalistSPH[count])
+    data.append(dataListUOM[count])
+    data.append(dataListUOC[count])
+    data.append(dataListPDF[count])
+    dataTemp = data
+    dataRow.append(dataTemp)
 
-len=len(dataListPDF)
-
-while 1:
-    if flag == 0:
-        if (dataListPDF[count] == '1'):
-            while 1:
-                if flag == 0:
-                    delete()
-                    flag = 1
-                    break
-            dataListPDF.append(1)
-            print(dataListPDF)
-            count += 1
-
-
+for i in dataListPDF:
+    count += 1
+    if (dataListPDF[count] == '1'):
+        appendList(dataRowPdf1)
+    else:
+        appendList(dataRowPdf0)
+    data = []
 
 
 
+header = ['UserId', 'SPH', 'UOM', 'UOC',"PDF"]
+
+
+
+
+with open('PdfUsageMemory.csv', 'w', encoding='UTF8',newline='') as f:
+    writer = csv.writer(f)
+
+    # write the header
+    writer.writerow(header)
+
+    # write the data
+    writer.writerows(dataRowPdf1)
+
+with open('UsageOfServers.csv', 'w', encoding='UTF8',newline='') as f:
+    writer = csv.writer(f)
+
+    # write the header
+    writer.writerow(header)
+
+    # write the data
+    writer.writerows(dataRowPdf0)

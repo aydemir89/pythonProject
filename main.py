@@ -12,6 +12,9 @@ import rabbitmqReceiver
 import time
 
 
+
+
+
 rabbitmqReceiver.main()
 lastValue = 0
 pdfValue = 0
