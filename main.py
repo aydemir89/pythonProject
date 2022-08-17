@@ -9,8 +9,6 @@ from sklearn import metrics
 import json
 import rabbitmqReceiver
 import time
-import pika
-import big_o
 import rabbitmqSender
 
 file = csv.DictReader(open('dataSet.csv','r'))
@@ -292,5 +290,6 @@ while (True):
         pdfValue = rabbitmqReceiver.y
         main_(lastValue,pdfValue)
         rabbitmqSender.main()
-
+        import Database
+        Database
 

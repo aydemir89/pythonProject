@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 import json
+
 try:
     connection = mysql.connector.connect(host='localhost',
                                          database='aiopsdb',
