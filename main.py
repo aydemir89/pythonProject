@@ -1,5 +1,4 @@
 import csv
-from itertools import zip_longest
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,6 +10,8 @@ import json
 import rabbitmqReceiver
 import time
 import pika
+import big_o
+import rabbitmqSender
 
 file = csv.DictReader(open('dataSet.csv','r'))
 datalistSPH = []
@@ -284,25 +285,12 @@ def main_(SPH,IsPdfSend):
         plt.title('Usage of cpu')
         plt.show()
 
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='localhost'))
-        channel = connection.channel()
-        channel.queue_declare(queue="hello11")
-
-        with open('data.json') as file:
-            data = json.load(file)
-
-        channel.basic_publish(exchange='', routing_key='hello11', body=json.dumps(data))
-        print(" [x] Sent 'Hello World!'")
-
-        connection.close()
-
 while (True):
     time.sleep(1)
     if (lastValue != rabbitmqReceiver.x or pdfValue != rabbitmqReceiver.y):
         lastValue = rabbitmqReceiver.x
         pdfValue = rabbitmqReceiver.y
         main_(lastValue,pdfValue)
-
+        rabbitmqSender.main()
 
 
