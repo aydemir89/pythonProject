@@ -8,8 +8,11 @@ from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 import json
 import rabbitmqReceiver
+
+
 import time
 import rabbitmqSender
+
 import Database
 
 file = csv.DictReader(open('dataSet.csv','r'))

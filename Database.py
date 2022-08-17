@@ -55,7 +55,7 @@ def whileFunctionSender():
     t1 = threading.Thread(target=whileFunctionSender, args=(lambda: SenderisChanged,))
     t1.start()
 
-if __name__ == '__main__':
+if __name__ == 'main':
     try:
         main()
     except KeyboardInterrupt:
@@ -64,5 +64,3 @@ if __name__ == '__main__':
             sys.exit(0)
         except SystemExit:
             os._exit(0)
-
-

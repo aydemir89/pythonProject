@@ -2,7 +2,6 @@ import pika, sys, os
 import json
 import time
 import threading
-import pika
 
 isChanged = False
 x = 0
