@@ -10,6 +10,7 @@ import json
 import rabbitmqReceiver
 import time
 import rabbitmqSender
+import Database
 
 file = csv.DictReader(open('dataSet.csv','r'))
 datalistSPH = []
@@ -290,6 +291,5 @@ while (True):
         pdfValue = rabbitmqReceiver.y
         main_(lastValue,pdfValue)
         rabbitmqSender.main()
-        import Database
-        Database
+        Database.main()
 
