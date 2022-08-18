@@ -1,16 +1,20 @@
 import csv
+import json
+import time
+from datetime import datetime
+import typer
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
 from sklearn import metrics
-import json
-import rabbitmqReceiver
-import time
-import rabbitmqSender
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
 import Database
+import rabbitmqReceiver
+import rabbitmqSender
+
+app = typer.Typer()
 
 file = csv.DictReader(open('dataSet.csv','r'))
 datalistSPH = []
@@ -32,6 +36,7 @@ data = []
 dataTemp = []
 dataRowPdf1 = []
 dataRowPdf0 = []
+
 
 def appendList(dataRow):
     data.append("62f3575ab51f8a773cde8ed1")
@@ -90,8 +95,6 @@ def main_(SPH,IsPdfSend):
         insurance_dataset = pd.read_csv('UsageOfServers.csv')
 
         # UsageOfServers.csv kullandığı#
-
-
 
         # first 5 rows of the dataframe
         insurance_dataset.head()
@@ -167,7 +170,8 @@ def main_(SPH,IsPdfSend):
             "SPH": SPH,
             "UOM": prediction1[0][0],
             "UOC": prediction[0][0],
-            "IsPdfSend": 0
+            "IsPdfSend": 0,
+            "CreatedAt": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         }
         out_file = open("data.json", "w")
         json_object = json.dump(dictionary, out_file, indent=6)
@@ -253,7 +257,8 @@ def main_(SPH,IsPdfSend):
             "SPH": SPH,
             "UOM": prediction_pdf1[0][0],
             "UOC": prediction_pdf[0][0],
-            "IsPdfSend" : 1
+            "IsPdfSend" : 1,
+            "CreatedAt": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         }
 
         out_file = open("data.json", "w")
@@ -292,4 +297,3 @@ while (True):
         main_(lastValue,pdfValue)
         rabbitmqSender.main()
         Database.main()
-
