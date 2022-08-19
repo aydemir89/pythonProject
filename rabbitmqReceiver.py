@@ -18,12 +18,10 @@ def main():
 
         def callback(ch, method, properties, body):
             json_object = json.loads(body)
-            print(json_object["SPH"])
             global x
             global y
             x = json_object["SPH"]
             y = json_object["IsPdfSend"]
-            print(y)
             global isChanged
             isChanged = True
 
@@ -37,10 +35,9 @@ def main():
 
         while True:
             if (isChanged):
-                print("test ", x(), y())
+                #print("test ", x(), y())
                 isChanged = False
             else:
-
                 time.sleep(0.2)
 
     t1 = threading.Thread(target=channel, args=(lambda: isChanged,))
