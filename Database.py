@@ -3,7 +3,7 @@ from mysql.connector import Error
 import json
 import sys
 import time,os
-
+connection = ""
 SenderisChanged = False
 def main():
     try:
@@ -21,6 +21,7 @@ def main():
             record = cursor.fetchone()
             print("You're connected to database: ", record)
 
+
             # Opening JSON file
             f = open('data.json')
 
@@ -30,11 +31,12 @@ def main():
             print(data)
 
             add_usageofserver = ("INSERT INTO usageserver "
-                            "(id, SPH, UOM, UOC, IsPdfSend) "
-                            "VALUES (%(id)s, %(SPH)s, %(UOM)s, %(UOC)s, %(IsPdfSend)s)")
+                            "(id, SPH, UOM, UOC, IsPdfSend,CreatedAt) "
+                            "VALUES (%(id)s, %(SPH)s, %(UOM)s, %(UOC)s, %(IsPdfSend)s,%(CreatedAt)s)")
 
             cursor.execute(add_usageofserver, data)
             connection.commit()
+
 
     except Error as e:
         print("Error while connecting to MySQL", e)
@@ -44,6 +46,7 @@ def main():
             connection.close()
 
             print("MySQL connection is closed")
+
 def whileFunctionSender():
     global SenderisChanged
     while True:
