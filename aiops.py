@@ -69,8 +69,16 @@ def AllPredictionRecords():
     console.print(table)
 @app.command()
 def prediction(SPH:int = None,IsPdfSend:int = None):
-    import main
-    main.main_(SPH,IsPdfSend)
+    dictionary = {
+        "SPH": SPH,
+        "IsPdfSend": IsPdfSend,
+    }
+    out_file = open("predection.json", "w")
+    json_object = json.dump(dictionary, out_file, indent=6)
+    out_file.close()
+
+
+
 
 
 @app.command()

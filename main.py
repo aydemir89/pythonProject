@@ -2,7 +2,6 @@ import csv
 import json
 import time
 from datetime import datetime
-import typer
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -14,9 +13,8 @@ import Database
 import rabbitmqReceiver
 import rabbitmqSender
 
-app = typer.Typer()
 
-file = csv.DictReader(open('dataSet.csv','r'))
+file = csv.DictReader(open('dataSet.csv', 'r'))
 datalistSPH = []
 dataListUOM = []
 dataListUOC = []
@@ -83,7 +81,6 @@ pdfValue = 0
 
 
 def main_(SPH,IsPdfSend):
-    print("IsPdfSend = " ,IsPdfSend)
     # Data Collection & Analysis
 
     regressor = LinearRegression()
@@ -125,25 +122,25 @@ def main_(SPH,IsPdfSend):
         # Linear Regression
 
         regressor.fit(X_train, Y_train)
-        print(regressor.intercept_)
+        #print(regressor.intercept_)
         # Model Evaluation
-        print(regressor.coef_)
+        #print(regressor.coef_)
 
         # prediction on training data
         training_data_prediction = regressor.predict(X_train)
         # R squared value
         r2_train = metrics.r2_score(Y_train, training_data_prediction)
-        print('R square value:', r2_train)
+        #print('R square value:', r2_train)
 
         test_data_prediction = regressor.predict(X_test)
         r2_test = metrics.r2_score(Y_test, test_data_prediction)
-        print('R square value:', r2_test)
+        #print('R square value:', r2_test)
 
         input_data_as_numpy_array = np.asarray(SPH)
         input_data_reshaped = input_data_as_numpy_array.reshape(-1, 1)
         prediction = regressor.predict(input_data_reshaped)
-        print("UOC")
-        print(prediction[0])
+        #print("UOC")
+        #print(prediction[0])
 
         """-----------------------------------------------------"""
         insurance_dataset.plot.scatter(x='SPH', y='UOM', title='asasasas')
@@ -162,8 +159,8 @@ def main_(SPH,IsPdfSend):
         input_data_as_numpy_array1 = np.asarray(SPH)
         input_data_reshaped1 = input_data_as_numpy_array1.reshape(-1, 1)
         prediction1 = regressor.predict(input_data_reshaped1)
-        print("UOM")
-        print(prediction1[0])
+        #print("UOM")
+        #print(prediction1[0])
 
         dictionary = {
             "id": "62f3575ab51f8a773cde8ed1",
@@ -215,13 +212,13 @@ def main_(SPH,IsPdfSend):
 
         test_data_prediction_pdf = regressor.predict(Xp_test)
         r2p_test = metrics.r2_score(Yp_test, test_data_prediction_pdf)
-        print('R square value:', r2p_test)
+        #print('R square value:', r2p_test)
 
         input_data_as_numpy_array_pdf = np.asarray(SPH)
         input_data_reshaped_pdf = input_data_as_numpy_array_pdf.reshape(-1, 1)
         prediction_pdf = regressor.predict(input_data_reshaped_pdf)
-        print("UOC")
-        print(prediction_pdf[0])
+        #print("UOC")
+        #print(prediction_pdf[0])
 
         pdf_dataset.plot.scatter(x='SPH', y='UOM', title='asasasas')
         # Splitting the data into training data and testing data
@@ -238,8 +235,8 @@ def main_(SPH,IsPdfSend):
         input_data_reshaped_pdf1 = input_data_as_numpy_array_pdf1.reshape(-1, 1)
         prediction_pdf1 = regressor.predict(input_data_reshaped_pdf1)
 
-        print("UOM")
-        print(prediction_pdf1[0])
+        #print("UOM")
+        #print(prediction_pdf1[0])
         """ import createPdfFile"""
         """a=createPdfFile.b""" #a is byte
         #1 Mib 1048.576 kb
@@ -248,10 +245,10 @@ def main_(SPH,IsPdfSend):
         a = a * 0.001 #a byte to kb
         a = (a*993)/1048.756
         prediction_pdf[0] = prediction_pdf[0] / a  #a is kb
-        print("user when generate pdf file")
-        print("UOC",prediction_pdf[0])
+        #print("user when generate pdf file")
+        #print("UOC",prediction_pdf[0])
         prediction_pdf1[0] = prediction_pdf1[0] / a
-        print("UOM",prediction_pdf1[0])
+        #print("UOM",prediction_pdf1[0])
         dictionary = {
             "id": "62f3575ab51f8a773cde8ed1",
             "SPH": SPH,
