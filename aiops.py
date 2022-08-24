@@ -28,7 +28,6 @@ import Database
 app = typer.Typer()
 
 
-
 user ="62f3575ab51f8a773cde8ed1"
 a = Database.connection
 
