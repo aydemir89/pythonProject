@@ -1,8 +1,9 @@
 {
       "id": "62f3575ab51f8a773cde8ed1",
-      "SPH": 20,
-      "UOM": 0.0,
-      "UOC": 0.0,
-      "IsPdfSend": 0,
-      "CreatedAt": "24/08/2022 14:02:03"
+      "SPH": 852,
+      "UOM": 7.876516315604209,
+      "UOC": 4.6216828509608465,
+      "IsPdfSend": 1,
+      "paymentSystem": "",
+      "CreatedAt": "25/08/2022 17:37:18"
 }

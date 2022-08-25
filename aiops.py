@@ -17,6 +17,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import rabbitmqSender
 import rabbitmqReceiver
+import DataGenerator
 
 
 from rich.table import Table
@@ -50,17 +51,46 @@ def show(table):
     table.add_column("UOM", min_width=12, justify="center")
     table.add_column("UOC", min_width=12, justify="center")
     table.add_column("IsPdfSend", min_width=12, justify="center")
+    table.add_column("Payment", min_width=12, justify="center")
+    table.add_column("SuggestedPayment", min_width=12, justify="center")
     table.add_column("CreatedAt", min_width=12, justify="center")
+
 
 @app.command(short_help="shows last predicted data")
 def printTable(table):
     f = open('data.json')
     data = json.load(f)
     show(table)
+    DataSuggestedPayment = ""
+
+
+    """if(data["paymentSystem"] == "Free"):
+        if(data["SPH"] <= 50):
+            DataSuggestedPayment = "Free"
+        elif(data["SPH"] > 50 and data["SPH"] <= 60 ):
+            DataSuggestedPayment = "Bronze"
+        elif (data["SPH"] > 60 and data["SPH"] <= 70 ):
+            DataSuggestedPayment = "Silver"
+        elif (data["SPH"] > 70 and data["SPH"] <= 80 ):
+            DataSuggestedPayment = "Gold"
+        elif (data["SPH"] > 80 and data["SPH"] <= 100):
+            DataSuggestedPayment = "Enterprise"
+
+    elif (data["paymentSystem"] == "Bronze"):
+        if (data["SPH"] > 100 and data["SPH"] <= 110):
+            DataSuggestedPayment = "Bronze"
+        elif (data["SPH"] > 100 and data["SPH"] <= 110):
+            DataSuggestedPayment = "Bronze"
+        elif (data["SPH"] > 100 and data["SPH"] <= 110):
+            DataSuggestedPayment = "Silver"
+        elif (data["SPH"] > 100 and data["SPH"] <= 110):
+            DataSuggestedPayment = "Gold"
+        elif (data["SPH"] > 100 and data["SPH"] <= 110):
+            DataSuggestedPayment = "Enterprise"""
 
     table.add_row(f'[cyan]{1}[/cyan]', f'[cyan]{data["id"]}[/cyan]', f'[green]{data["SPH"]}[/green]',
                   f'[green]{data["UOM"]}[/green]', f'[green]{data["UOC"]}[/green]',
-                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["CreatedAt"]}[/green]')
+                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]', f'[green]{DataSuggestedPayment}[/green]',f'[green]{data["CreatedAt"]}[/green]')
 
     console.print(table)
 
@@ -83,75 +113,75 @@ def AllPredictionRecords(table):
 
     console.print(table)
 
+
 @app.command()
 def prediction():
-
-    file = csv.DictReader(open('dataSet.csv', 'r'))
-    datalistSPH = []
-    dataListUOM = []
-    dataListUOC = []
-    dataListPDF = []
-    dataListPDF2 = []
-    dataListUser = []
-    temp = []
-    user = "62f3575ab51f8a773cde8ed1"
-    for col in file:
-        datalistSPH.append(col['SPH'])
-        dataListUOM.append(col['UOM'])
-        dataListUOC.append(col['UOC'])
-        dataListPDF.append(col['PDF'])
-
-    count = -1
-    data = []
-    dataTemp = []
-    dataRowPdf1 = []
-    dataRowPdf0 = []
-
-    def appendList(dataRow):
-        data.append("62f3575ab51f8a773cde8ed1")
-        data.append(datalistSPH[count])
-        data.append(dataListUOM[count])
-        data.append(dataListUOC[count])
-        data.append(dataListPDF[count])
-        dataTemp = data
-        dataRow.append(dataTemp)
-
-    for i in dataListPDF:
-        count += 1
-        if (dataListPDF[count] == '1'):
-            appendList(dataRowPdf1)
-        else:
-            appendList(dataRowPdf0)
-        data = []
-
-    header = ['UserId', 'SPH', 'UOM', 'UOC', "PDF"]
-
-    with open('PdfUsageMemory.csv', 'w', encoding='UTF8', newline='') as f:
-        writer = csv.writer(f)
-
-        # write the header
-        writer.writerow(header)
-
-        # write the data
-        writer.writerows(dataRowPdf1)
-
-    with open('UsageOfServers.csv', 'w', encoding='UTF8', newline='') as f:
-        writer = csv.writer(f)
-
-        # write the header
-        writer.writerow(header)
-
-        # write the data
-        writer.writerows(dataRowPdf0)
-
-
     lastValue = 0
     pdfValue = 0
     rabbitmqReceiver.main()
 
 
+    def Seperate():
+        time.sleep(1)
+        file = csv.DictReader(open('dataSet.csv', 'r'))
+        datalistSPH = []
+        dataListUOM = []
+        dataListUOC = []
+        dataListPDF = []
+        dataListPDF2 = []
+        dataListUser = []
+        temp = []
+        user = "62f3575ab51f8a773cde8ed1"
+        for col in file:
+            datalistSPH.append(col['SPH'])
+            dataListUOM.append(col['UOM'])
+            dataListUOC.append(col['UOC'])
+            dataListPDF.append(col['PDF'])
 
-    def main_(SPH, IsPdfSend):
+        count = -1
+        data = []
+        dataTemp = []
+        dataRowPdf1 = []
+        dataRowPdf0 = []
+
+        def appendList(dataRow):
+            data.append("62f3575ab51f8a773cde8ed1")
+            data.append(datalistSPH[count])
+            data.append(dataListUOM[count])
+            data.append(dataListUOC[count])
+            data.append(dataListPDF[count])
+            dataTemp = data
+            dataRow.append(dataTemp)
+
+        for i in dataListPDF:
+            count += 1
+            if (dataListPDF[count] == '1'):
+                appendList(dataRowPdf1)
+            else:
+                appendList(dataRowPdf0)
+            data = []
+
+        header = ['UserId', 'SPH', 'UOM', 'UOC', "PDF"]
+
+        with open('PdfUsageMemory.csv', 'w', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+
+            # write the header
+            writer.writerow(header)
+
+            # write the data
+            writer.writerows(dataRowPdf1)
+
+        with open('UsageOfServers.csv', 'w', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+
+            # write the header
+            writer.writerow(header)
+
+            # write the data
+            writer.writerows(dataRowPdf0)
+
+    def main_(SPH, IsPdfSend, paymentSystem):
         # Data Collection & Analysis
 
         regressor = LinearRegression()
@@ -243,9 +273,9 @@ def prediction():
                 "UOM": prediction1[0][0],
                 "UOC": prediction[0][0],
                 "IsPdfSend": 0,
+                "paymentSystem": paymentSystem,
                 "CreatedAt": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
-
 
             out_file = open("data.json", "w")
             json_object = json.dump(dictionary, out_file, indent=6)
@@ -325,10 +355,10 @@ def prediction():
             # print("user when generate pdf file")
             # print("UOC",prediction_pdf[0])
             prediction_pdf1[0] = prediction_pdf1[0] / a
-            if(prediction_pdf1[0]>=100 or prediction_pdf >= 100):
+            if (prediction_pdf1[0] >= 100 or prediction_pdf >= 100):
                 prediction_pdf[0] = 100
                 prediction_pdf1[0] = 100
-            if (prediction_pdf1[0]<= 0 or prediction_pdf[0] <= 0):
+            if (prediction_pdf1[0] <= 0 or prediction_pdf[0] <= 0):
                 prediction_pdf[0][0] = 0
                 prediction_pdf1[0][0] = 0
             # print("UOM",prediction_pdf1[0])
@@ -338,6 +368,7 @@ def prediction():
                 "UOM": prediction_pdf1[0][0],
                 "UOC": prediction_pdf[0][0],
                 "IsPdfSend": 1,
+                "paymentSystem": paymentSystem,
                 "CreatedAt": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
 
@@ -369,6 +400,9 @@ def prediction():
             plt.title('Usage of cpu')
             plt.show()"""
 
+    paymentSystem = rabbitmqReceiver.z
+    DataGenerator.main(paymentSystem)
+
     while (True):
         time.sleep(0.1)
         #SPH = int(input("Enter the SPH you want to predict="))
@@ -378,9 +412,13 @@ def prediction():
         #print(f"PDF: {IsPdfSend}!")
 
         if (lastValue != rabbitmqReceiver.x or pdfValue != rabbitmqReceiver.y):
-            lastValue=rabbitmqReceiver.x
+
+            time.sleep(1)
+            lastValue = rabbitmqReceiver.x
             pdfValue = rabbitmqReceiver.y
-            main_(lastValue, pdfValue)
+
+            Seperate()
+            main_(lastValue, pdfValue,paymentSystem)
             rabbitmqSender.main()
             table = Table(show_header=True, header_style="bold blue", show_lines=True)
             printTable(table)
@@ -396,6 +434,12 @@ def SaveDatabase():
         AllPredictionRecords(table)
     else:
         print("Not saved")
+
+@app.command()
+def updatePaymentSystem():
+
+    print("kadmdkldm")
+
 
 @app.command()
 def bye(name: Optional[str] = None):

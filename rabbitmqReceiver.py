@@ -7,6 +7,7 @@ import pika
 isChanged = False
 x = 0
 y = 0
+z = ""
 flag = 0
 
 
@@ -21,8 +22,10 @@ def main():
             json_object = json.loads(body)
             global x
             global y
+            global z
             x = json_object["SPH"]
             y = json_object["IsPdfSend"]
+            z = json_object["paymentSystem"]
             global isChanged
             isChanged = True
 
@@ -31,18 +34,16 @@ def main():
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
 
-    def whileFunction(x, y):
+    def whileFunction(x,y,z):
         global isChanged
-
         while True:
             if (isChanged):
-                #print("test ", x(), y())
                 isChanged = False
             else:
                 time.sleep(0.2)
 
     t1 = threading.Thread(target=channel, args=(lambda: isChanged,))
-    t2 = threading.Thread(target=whileFunction, args=(lambda: x, lambda: y,))
+    t2 = threading.Thread(target=whileFunction, args=(lambda: x, lambda: y, lambda: z,))
 
     t1.start()
     t2.start()
@@ -50,7 +51,6 @@ def main():
 
 if __name__ == '__main__':
     try:
-        flag += 1
         main()
 
     except KeyboardInterrupt:
