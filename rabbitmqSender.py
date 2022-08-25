@@ -1,36 +1,41 @@
 import sys
+import threading
 import time,os
-
 import pika
 import json
 
 SenderisChanged = False
 data = {}
-
 def main():
+
+    def channel(alive):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
         channel.queue_declare(queue="hello11")
         with open('data.json') as file:
             data = json.load(file)
-        global SenderisChanged
-        SenderisChanged = True
-        channel.basic_publish(exchange='', routing_key='hello11', body=json.dumps(data))
-        print(" [x] Sent 'Hello World!'")
+        channel.basic_publish(exchange='', routing_key='hello11', body=json.dumps(data),mandatory=False)
+        print(" [x] Sent 'prediction sent")
+        channel.stop_consuming()
         connection.close()
 
-def whileFunctionSender():
-    global SenderisChanged
-    while True:
-        if(SenderisChanged):
-            SenderisChanged=False
-        else:
-            time.sleep(0.2)
+    def changed():
+        global SenderisChanged
+        while True:
+            if (SenderisChanged):
+                SenderisChanged = False
+            else:
+                time.sleep(0.2)
 
-    t1 = threading.Thread(target=whileFunctionSender, args=(lambda: SenderisChanged,))
+
+    t1 = threading.Thread(target=channel, args=(lambda: SenderisChanged,))
+    t2 = threading.Thread(target=changed)
+
     t1.start()
+    t2.start()
 
-""""React ta soket yapısı olacak."""
+
+
 
 if __name__ == '__main__':
     try:

@@ -7,6 +7,7 @@ import pika
 isChanged = False
 x = 0
 y = 0
+flag = 0
 
 
 def main():
@@ -49,7 +50,9 @@ def main():
 
 if __name__ == '__main__':
     try:
+        flag += 1
         main()
+
     except KeyboardInterrupt:
         print('Interrupted')
         try:
