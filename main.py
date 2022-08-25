@@ -6,10 +6,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import typer
+from rich.prompt import Prompt
 from sklearn import metrics
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-import Database
+
+import aiops
 import rabbitmqReceiver
 import rabbitmqSender
 
@@ -75,10 +78,8 @@ with open('UsageOfServers.csv', 'w', encoding='UTF8',newline='') as f:
     # write the data
     writer.writerows(dataRowPdf0)
 
-rabbitmqReceiver.main()
 lastValue = 0
 pdfValue = 0
-
 
 def main_(SPH,IsPdfSend):
     # Data Collection & Analysis
@@ -94,10 +95,10 @@ def main_(SPH,IsPdfSend):
         # UsageOfServers.csv kullandığı#
 
         # first 5 rows of the dataframe
-        insurance_dataset.head()
+        #insurance_dataset.head()
         # number of rows and columns
-        insurance_dataset.shape
-        insurance_dataset.info()
+        #insurance_dataset.shape
+        #insurance_dataset.info()
 
         # checking for missing values
         insurance_dataset.isnull().sum()
@@ -174,7 +175,7 @@ def main_(SPH,IsPdfSend):
         json_object = json.dump(dictionary, out_file, indent=6)
         out_file.close()
 
-        plt.figure(figsize=(10, 10))
+        """plt.figure(figsize=(10, 10))
         sns.countplot(x='SPH', data=insurance_dataset)
         plt.title('Submission per hour Distribution')
         plt.show()
@@ -188,14 +189,14 @@ def main_(SPH,IsPdfSend):
         sns.countplot(x='UOC', data=insurance_dataset)
         plt.title('Usage of cpu')
         plt.show()
-
+"""
 
     elif(IsPdfSend == 1):
 
         pdf_dataset = pd.read_csv('PdfUsageMemory.csv')
-        pdf_dataset.head()
-        pdf_dataset.shape
-        pdf_dataset.info()
+       # pdf_dataset.head()
+        #pdf_dataset.shape
+        #pdf_dataset.info()
         pdf_dataset.isnull().sum()
         pdf_dataset.describe()
 
@@ -271,7 +272,7 @@ def main_(SPH,IsPdfSend):
         dataListUOC.append(prediction_pdf)
         dataListPDF.append(1)
 
-        plt.figure(figsize=(10, 10))
+        """plt.figure(figsize=(10, 10))
         sns.countplot(x='SPH', data=pdf_dataset)
         plt.title('Submission per hour Distribution')
         plt.show()
@@ -284,13 +285,22 @@ def main_(SPH,IsPdfSend):
         plt.figure(figsize=(10, 10))
         sns.countplot(x='UOC', data=pdf_dataset)
         plt.title('Usage of cpu')
-        plt.show()
+        plt.show()"""
+
 
 while (True):
-    time.sleep(1)
-    if (lastValue != rabbitmqReceiver.x or pdfValue != rabbitmqReceiver.y):
-        lastValue = rabbitmqReceiver.x
-        pdfValue = rabbitmqReceiver.y
-        main_(lastValue,pdfValue)
-        rabbitmqSender.main()
-        Database.main()
+    time.sleep(0.1)
+    SPH = int(input("Enter the SPH you want to predict="))
+    print(f"Submission per hour: {SPH}!")
+
+    IsPdfSend = int(input("Will you send the forms as pdf?="))
+    print(f"PDF: {IsPdfSend}!")
+
+    if (lastValue != SPH or pdfValue != IsPdfSend):
+        main_(SPH, IsPdfSend)
+        # rabbitmqSender.main()
+    f = open('data.json')
+    data = json.load(f)
+    print(data)
+    aiops.show(data)
+

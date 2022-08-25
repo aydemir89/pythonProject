@@ -5,6 +5,7 @@ import sys
 import time,os
 connection = ""
 SenderisChanged = False
+
 def main():
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -28,8 +29,6 @@ def main():
             # returns JSON object as
             # a dictionary
             data = json.load(f)
-            print(data)
-
             add_usageofserver = ("INSERT INTO usageserver "
                             "(id, SPH, UOM, UOC, IsPdfSend,CreatedAt) "
                             "VALUES (%(id)s, %(SPH)s, %(UOM)s, %(UOC)s, %(IsPdfSend)s,%(CreatedAt)s)")
@@ -47,16 +46,7 @@ def main():
 
             print("MySQL connection is closed")
 
-def whileFunctionSender():
-    global SenderisChanged
-    while True:
-        if(SenderisChanged):
-            SenderisChanged=False
-        else:
-            time.sleep(0.2)
 
-    t1 = threading.Thread(target=whileFunctionSender, args=(lambda: SenderisChanged,))
-    t1.start()
 
 if __name__ == '__main__':
     try:
