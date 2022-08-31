@@ -26,6 +26,7 @@ import json
 
 import Database
 
+
 app = typer.Typer()
 
 
@@ -53,6 +54,8 @@ def show(table):
     table.add_column("IsPdfSend", min_width=12, justify="center")
     table.add_column("Payment", min_width=12, justify="center")
     table.add_column("SuggestedPayment", min_width=12, justify="center")
+    table.add_column("Suggested UOM", min_width=12, justify="center")
+    table.add_column("Suggested UOC", min_width=12, justify="center")
     table.add_column("CreatedAt", min_width=12, justify="center")
 
 
@@ -60,37 +63,14 @@ def show(table):
 def printTable(table):
     f = open('data.json')
     data = json.load(f)
+
+    f = open('Suggested.json')
+    sd = json.load(f)
     show(table)
-    DataSuggestedPayment = ""
-
-
-    """if(data["paymentSystem"] == "Free"):
-        if(data["SPH"] <= 50):
-            DataSuggestedPayment = "Free"
-        elif(data["SPH"] > 50 and data["SPH"] <= 60 ):
-            DataSuggestedPayment = "Bronze"
-        elif (data["SPH"] > 60 and data["SPH"] <= 70 ):
-            DataSuggestedPayment = "Silver"
-        elif (data["SPH"] > 70 and data["SPH"] <= 80 ):
-            DataSuggestedPayment = "Gold"
-        elif (data["SPH"] > 80 and data["SPH"] <= 100):
-            DataSuggestedPayment = "Enterprise"
-
-    elif (data["paymentSystem"] == "Bronze"):
-        if (data["SPH"] > 100 and data["SPH"] <= 110):
-            DataSuggestedPayment = "Bronze"
-        elif (data["SPH"] > 100 and data["SPH"] <= 110):
-            DataSuggestedPayment = "Bronze"
-        elif (data["SPH"] > 100 and data["SPH"] <= 110):
-            DataSuggestedPayment = "Silver"
-        elif (data["SPH"] > 100 and data["SPH"] <= 110):
-            DataSuggestedPayment = "Gold"
-        elif (data["SPH"] > 100 and data["SPH"] <= 110):
-            DataSuggestedPayment = "Enterprise"""
 
     table.add_row(f'[cyan]{1}[/cyan]', f'[cyan]{data["id"]}[/cyan]', f'[green]{data["SPH"]}[/green]',
                   f'[green]{data["UOM"]}[/green]', f'[green]{data["UOC"]}[/green]',
-                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]', f'[green]{DataSuggestedPayment}[/green]',f'[green]{data["CreatedAt"]}[/green]')
+                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]', f'[green]{data["SuggestedPayment"]}[/green]', f'[green]{data["CreatedAt"]}[/green]')
 
     console.print(table)
 
@@ -114,11 +94,13 @@ def AllPredictionRecords(table):
     console.print(table)
 
 
+
 @app.command()
 def prediction():
     lastValue = 0
     pdfValue = 0
     rabbitmqReceiver.main()
+    SuggestedPrediction = ""
 
 
     def Seperate():
@@ -182,6 +164,8 @@ def prediction():
             writer.writerows(dataRowPdf0)
 
     def main_(SPH, IsPdfSend, paymentSystem):
+        SuggestedPrediction = paymentSystem
+
         # Data Collection & Analysis
 
         regressor = LinearRegression()
@@ -260,12 +244,22 @@ def prediction():
             prediction1 = regressor.predict(input_data_reshaped1)
             # print("UOM")
             # print(prediction1[0])
+
             if (prediction1[0] >= 100 or prediction[0] >= 100):
                 prediction1[0] = 100
                 prediction[0] = 100
             if (prediction1[0] <= 0 or prediction[0] <= 0):
                 prediction1[0] = 0
                 prediction[0] = 0
+
+            if (SPH > 100 and SPH < 1000 and prediction1[0] == 100):
+                SuggestedPrediction = "Bronze"  # free
+            elif (SPH > 1000 and SPH < 2500 and prediction1[0] == 100):
+                SuggestedPrediction = "Silver"  # bronze
+            elif (SPH > 2500 and SPH < 10000 and prediction1[0] == 100):
+                SuggestedPrediction = "Gold"  # silver
+            elif (SPH > 100000 and prediction1[0] == 100):
+                SuggestedPrediction = "Enterprise"  # gold
 
             dictionary = {
                 "id": "62f3575ab51f8a773cde8ed1",
@@ -274,6 +268,7 @@ def prediction():
                 "UOC": prediction[0][0],
                 "IsPdfSend": 0,
                 "paymentSystem": paymentSystem,
+                "SuggestedPayment": SuggestedPrediction,
                 "CreatedAt": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
 
@@ -362,6 +357,19 @@ def prediction():
                 prediction_pdf[0][0] = 0
                 prediction_pdf1[0][0] = 0
             # print("UOM",prediction_pdf1[0])
+
+
+            if (SPH > 100 and SPH<1000 and  prediction_pdf[0] ==100):
+                SuggestedPrediction = "Bronze" #free
+            elif (SPH > 1000 and SPH<2500 and prediction_pdf[0] ==100 ):
+                SuggestedPrediction = "Silver" #bronze
+            elif (SPH > 2500 and SPH<10000 and prediction_pdf[0] ==100):
+                SuggestedPrediction = "Gold"  #silver
+            elif (SPH > 100000 and prediction_pdf[0] ==100):
+                SuggestedPrediction = "Enterprise" #gold
+
+            print("Suggested: ",SuggestedPrediction)
+
             dictionary = {
                 "id": "62f3575ab51f8a773cde8ed1",
                 "SPH": SPH,
@@ -369,6 +377,7 @@ def prediction():
                 "UOC": prediction_pdf[0][0],
                 "IsPdfSend": 1,
                 "paymentSystem": paymentSystem,
+                "SuggestedPayment": SuggestedPrediction,
                 "CreatedAt": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
 
@@ -400,9 +409,6 @@ def prediction():
             plt.title('Usage of cpu')
             plt.show()"""
 
-    paymentSystem = rabbitmqReceiver.z
-    DataGenerator.main(paymentSystem)
-
     while (True):
         time.sleep(0.1)
         #SPH = int(input("Enter the SPH you want to predict="))
@@ -416,13 +422,25 @@ def prediction():
             time.sleep(1)
             lastValue = rabbitmqReceiver.x
             pdfValue = rabbitmqReceiver.y
-
+            paymentSystem = rabbitmqReceiver.z
+            DataGenerator.main(paymentSystem)
             Seperate()
-            main_(lastValue, pdfValue,paymentSystem)
+            main_(lastValue, pdfValue, paymentSystem)
+
+            predictionData = open('data.json')
+            file = json.load(predictionData)
+
+            if (file["paymentSystem"] != file["SuggestedPayment"]):
+                DataGenerator.main(file["SuggestedPayment"])
+                Seperate()
+                #main_(lastValue,pdfValue,file["SuggestedPayment"])
+
+
             rabbitmqSender.main()
             table = Table(show_header=True, header_style="bold blue", show_lines=True)
             printTable(table)
             SaveDatabase()
+
 
 
 
@@ -435,18 +453,17 @@ def SaveDatabase():
     else:
         print("Not saved")
 
-@app.command()
+
+
+
 def updatePaymentSystem():
+    """ SuggestedData = open('Suggested.json')
+    data = json.load(SuggestedData)"""
 
-    print("kadmdkldm")
 
 
-@app.command()
-def bye(name: Optional[str] = None):
-    if name:
-        typer.echo(f"Bye {name}")
-    else:
-        typer.echo("Goodbye!")
+
+
 
 if __name__ == "__main__":
     app()

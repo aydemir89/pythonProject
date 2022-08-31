@@ -17,6 +17,8 @@ user ="62f3575ab51f8a773cde8ed1"
 
 def main(payment):
 
+    Submission = 0
+
     if (payment == "Free"):
         Submission = 100
     elif (payment == "Bronze"):
@@ -25,8 +27,9 @@ def main(payment):
         Submission = 2500
     elif (payment == "Gold"):
         Submission = 10000
-    else:
-        Submission = 50000
+    elif (payment == "Enterprise"):
+        Submission = 100000
+
 
     sph1 = (Submission * 25) / 100
     sph2 = (Submission * 50) / 100
@@ -65,6 +68,10 @@ def main(payment):
             dataListUOM.append(UOM)
             dataListUOC.append(UOC)
 
+        myfile = open('dataSet.csv', 'r+')
+        myfile.truncate(0)
+        myfile.close()
+
         d = [dataListUser, datalistSPH, dataListUOM, dataListUOC, dataListPDF]
         export_data = zip_longest(*d, fillvalue='')
         with open('dataSet.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
@@ -73,8 +80,11 @@ def main(payment):
             wr.writerows(export_data)
         myfile.close()
 
-
-
+    dataListUser.clear()
+    datalistSPH.clear()
+    dataListUOM.clear()
+    dataListUOC.clear()
+    dataListPDF.clear()
 
 # dakikada kaç submission aldığı
 # kullandığı memory
