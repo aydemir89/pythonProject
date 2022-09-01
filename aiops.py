@@ -58,6 +58,14 @@ def show(table):
     table.add_column("Suggested UOC", min_width=12, justify="center")
     table.add_column("CreatedAt", min_width=12, justify="center")
 
+@app.command()
+def processBar():
+    total = 0
+    with typer.progressbar(range(100), label="Processing") as progress:
+        for value in progress:
+            time.sleep(0.03)
+            total += 1
+    print(f"Processed {total} things.")
 
 @app.command(short_help="shows last predicted data")
 def printTable(table):
@@ -70,7 +78,7 @@ def printTable(table):
 
     table.add_row(f'[cyan]{1}[/cyan]', f'[cyan]{data["id"]}[/cyan]', f'[green]{data["SPH"]}[/green]',
                   f'[green]{data["UOM"]}[/green]', f'[green]{data["UOC"]}[/green]',
-                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]', f'[green]{data["SuggestedPayment"]}[/green]', f'[green]{data["CreatedAt"]}[/green]')
+                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]', f'[green]{data["SuggestedPayment"]}[/green]',f'[green]{sd["UOM"]}[/green]',f'[green]{sd["UOC"]}[/green]',f'[green]{data["CreatedAt"]}[/green]')
 
     console.print(table)
 
@@ -89,7 +97,7 @@ def AllPredictionRecords(table):
     show(table)
 
     for idx, row in enumerate(records, start=1):
-        table.add_row(str(idx), f'[cyan]{row[0]}[/cyan]', f'[green]{row[1]}[/green]',f'[cyan]{row[2]}[/cyan]', f'[green]{row[3]}[/green]',f'[green]{row[4]}[/green]',f'[green]{row[5]}[/green]')
+        table.add_row(str(idx), f'[cyan]{row[0]}[/cyan]', f'[green]{row[1]}[/green]',f'[cyan]{row[2]}[/cyan]', f'[green]{row[3]}[/green]',f'[green]{row[4]}[/green]',f'[green]{row[5]}[/green]',f'[green]{row[6]}[/green]',f'[green]{row[7]}[/green]',f'[green]{row[8]}[/green]',f'[green]{row[9]}[/green]')
 
     console.print(table)
 
@@ -153,7 +161,21 @@ def YesPDFPredictionData(SPH):
     # print("user when generate pdf file")
     # print("UOC",prediction_pdf[0])
     prediction_pdf1[0] = prediction_pdf1[0] / a
+    """ plt.figure(figsize=(10, 10))
+    sns.countplot(x='SPH', data=pdf_dataset)
+    plt.title('Submission per hour Distribution')
+    plt.show()
 
+    plt.figure(figsize=(10, 10))
+    sns.distplot(pdf_dataset['UOM'])
+    plt.title('Usage of memory')
+    plt.show()
+
+    plt.figure(figsize=(10, 10))
+    sns.countplot(x='UOC', data=pdf_dataset)
+    plt.title('Usage of cpu')
+    plt.show()
+"""
     return prediction_pdf,prediction_pdf1
 
 def NoPDFPredictionData(SPH):
@@ -234,6 +256,21 @@ def NoPDFPredictionData(SPH):
     input_data_reshaped1 = input_data_as_numpy_array1.reshape(-1, 1)
     prediction1 = regressor.predict(input_data_reshaped1)
     # print("UOM")
+
+    """plt.figure(figsize=(10, 10))
+    sns.countplot(x='SPH', data=insurance_dataset)
+    plt.title('Submission per hour Distribution')
+    plt.show()
+
+    plt.figure(figsize=(10, 10))
+    sns.distplot(insurance_dataset['UOM'])
+    plt.title('Usage of memory')
+    plt.show()
+
+    plt.figure(figsize=(10, 10))
+    sns.countplot(x='UOC', data=insurance_dataset)
+    plt.title('Usage of cpu')
+    plt.show()"""
 
     return prediction,prediction1
 
@@ -344,21 +381,7 @@ def prediction():
             json_object = json.dump(dictionary, out_file, indent=6)
             out_file.close()
 
-            """plt.figure(figsize=(10, 10))
-            sns.countplot(x='SPH', data=insurance_dataset)
-            plt.title('Submission per hour Distribution')
-            plt.show()
-    
-            plt.figure(figsize=(10, 10))
-            sns.distplot(insurance_dataset['UOM'])
-            plt.title('Usage of memory')
-            plt.show()
-    
-            plt.figure(figsize=(10, 10))
-            sns.countplot(x='UOC', data=insurance_dataset)
-            plt.title('Usage of cpu')
-            plt.show()
-    """
+
 
         elif(IsPdfSend == 1):
 
@@ -399,29 +422,16 @@ def prediction():
             json_object = json.dump(dictionary, out_file, indent=6)
             out_file.close()
 
-        datalistSPH = []
-        dataListUOM = []
-        dataListUOC = []
-        dataListPDF = []
-        datalistSPH.append(SPH)
-        dataListUOM.append(prediction_pdf1)
-        dataListUOC.append(prediction_pdf)
-        dataListPDF.append(1)
+            datalistSPH = []
+            dataListUOM = []
+            dataListUOC = []
+            dataListPDF = []
+            datalistSPH.append(SPH)
+            dataListUOM.append(prediction_pdf1)
+            dataListUOC.append(prediction_pdf)
+            dataListPDF.append(1)
 
-        """plt.figure(figsize=(10, 10))
-        sns.countplot(x='SPH', data=pdf_dataset)
-        plt.title('Submission per hour Distribution')
-        plt.show()
 
-        plt.figure(figsize=(10, 10))
-        sns.distplot(pdf_dataset['UOM'])
-        plt.title('Usage of memory')
-        plt.show()
-
-        plt.figure(figsize=(10, 10))
-        sns.countplot(x='UOC', data=pdf_dataset)
-        plt.title('Usage of cpu')
-        plt.show()"""
 
     while (True):
         time.sleep(0.1)
@@ -448,15 +458,41 @@ def prediction():
                 DataGenerator.main(file["SuggestedPayment"])
                 Seperate()
                 if(file["IsPdfSend"] == 0):
-                    console.print(YesPDFPredictionData(file["SPH"]))
+                    nopdf,nopdf1 = NoPDFPredictionData(file["SPH"])
+                    dictionary = {
+                        "UOM": nopdf[0][0],
+                        "UOC": nopdf1[0][0],
+                    }
+
+                    out_file = open("Suggested.json", "w")
+                    json_object = json.dump(dictionary, out_file, indent=6)
+                    out_file.close()
+
                 else:
-                    console.print(NoPDFPredictionData(file["SPH"]))
-                #main_(lastValue,pdfValue,file["SuggestedPayment"])
+                    pdf, pdf1 = YesPDFPredictionData(file["SPH"])
+                    dictionary = {
+                        "UOM": pdf1[0][0],
+                        "UOC": pdf[0][0],
+                    }
+                    out_file = open("Suggested.json", "w")
+                    json_object = json.dump(dictionary, out_file, indent=6)
+                    out_file.close()
+            else:
+                dictionary = {
+                    "UOM": 0,
+                    "UOC": 0,
+                }
+                out_file = open("Suggested.json", "w")
+                json_object = json.dump(dictionary, out_file, indent=6)
+                out_file.close()
+
 
 
             rabbitmqSender.main()
+            processBar()
             table = Table(show_header=True, header_style="bold blue", show_lines=True)
             printTable(table)
+
             SaveDatabase()
 
 
@@ -471,12 +507,6 @@ def SaveDatabase():
     else:
         print("Not saved")
 
-
-
-
-def updatePaymentSystem():
-    """ SuggestedData = open('Suggested.json')
-    data = json.load(SuggestedData)"""
 
 
 
