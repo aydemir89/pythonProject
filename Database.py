@@ -25,15 +25,20 @@ def main():
 
             # Opening JSON file
             f = open('data.json')
+            file = open('Suggested.json')
 
             # returns JSON object as
             # a dictionary
             data = json.load(f)
-            add_usageofserver = ("INSERT INTO usageserver "
-                            "(id, SPH, UOM, UOC, IsPdfSend,CreatedAt) "
-                            "VALUES (%(id)s, %(SPH)s, %(UOM)s, %(UOC)s, %(IsPdfSend)s,%(CreatedAt)s)")
+            suggestedData = json.load(file)
+            c = dict(data.items() | suggestedData.items())
 
-            cursor.execute(add_usageofserver, data)
+
+            add_usageofserver = ("INSERT INTO usageserver "
+                            "(id, SPH, UOM, UOC, IsPdfSend,paymentSystem,SuggestedPayment,memory,cpu,CreatedAt)"
+                            "VALUES (%(id)s, %(SPH)s, %(UOM)s, %(UOC)s, %(IsPdfSend)s, %(paymentSystem)s, %(SuggestedPayment)s, %(memory)s, %(cpu)s, %(CreatedAt)s)")
+
+            cursor.execute(add_usageofserver, c)
             connection.commit()
 
 

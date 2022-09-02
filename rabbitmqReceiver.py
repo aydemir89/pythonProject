@@ -25,7 +25,7 @@ def main():
             global z
             x = json_object["SPH"]
             y = json_object["IsPdfSend"]
-            z = json_object["paymentSystem"]
+            z = json_object["cpuCore"]
             global isChanged
             isChanged = True
 

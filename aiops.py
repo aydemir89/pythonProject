@@ -49,13 +49,13 @@ def show(table):
     table.add_column("#", style="dim", width=3, justify="center")
     table.add_column("id", min_width=20, justify="center")
     table.add_column("SPH", min_width=12, justify="center")
-    table.add_column("UOM", min_width=12, justify="center")
-    table.add_column("UOC", min_width=12, justify="center")
+    table.add_column("Memory", min_width=12, justify="center")
+    table.add_column("CPU", min_width=12, justify="center")
     table.add_column("IsPdfSend", min_width=12, justify="center")
-    table.add_column("Payment", min_width=12, justify="center")
-    table.add_column("SuggestedPayment", min_width=12, justify="center")
-    table.add_column("Suggested UOM", min_width=12, justify="center")
-    table.add_column("Suggested UOC", min_width=12, justify="center")
+    table.add_column("Using CPU Core", min_width=12, justify="center")
+    table.add_column("Suggested CPU Core", min_width=12, justify="center")
+    table.add_column("Memory", min_width=12, justify="center")
+    table.add_column("CPU", min_width=12, justify="center")
     table.add_column("CreatedAt", min_width=12, justify="center")
 
 @app.command()
@@ -78,7 +78,7 @@ def printTable(table):
 
     table.add_row(f'[cyan]{1}[/cyan]', f'[cyan]{data["id"]}[/cyan]', f'[green]{data["SPH"]}[/green]',
                   f'[green]{data["UOM"]}[/green]', f'[green]{data["UOC"]}[/green]',
-                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]', f'[green]{data["SuggestedPayment"]}[/green]',f'[green]{sd["UOM"]}[/green]',f'[green]{sd["UOC"]}[/green]',f'[green]{data["CreatedAt"]}[/green]')
+                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]', f'[green]{data["SuggestedPayment"]}[/green]', f'[green]{sd["memory"]}[/green]',f'[green]{sd["cpu"]}[/green]', f'[green]{data["CreatedAt"]}[/green]')
 
     console.print(table)
 
@@ -350,21 +350,22 @@ def prediction():
 
             prediction,prediction1 = NoPDFPredictionData(SPH)
 
-            if (prediction1[0] >= 100 or prediction[0] >= 100):
-                prediction1[0] = 100
-                prediction[0] = 100
+            if (prediction1[0] >= 70 or prediction[0] >= 70):
+                prediction1[0] = 70
+                prediction[0] = 70
             if (prediction1[0] <= 0 or prediction[0] <= 0):
                 prediction1[0] = 0
                 prediction[0] = 0
 
-            if (SPH > 100 and SPH < 1000 and prediction1[0] == 100):
-                SuggestedPrediction = "Bronze"  # free
-            elif (SPH > 1000 and SPH < 2500 and prediction1[0] == 100):
-                SuggestedPrediction = "Silver"  # bronze
-            elif (SPH > 2500 and SPH < 10000 and prediction1[0] == 100):
-                SuggestedPrediction = "Gold"  # silver
-            elif (SPH > 100000 and prediction1[0] == 100):
-                SuggestedPrediction = "Enterprise"  # gold
+
+            if (SPH > 100 and SPH < 1000 and prediction1[0] == 70):
+                SuggestedPrediction = "Dual-Core(2)"  # free
+            elif (SPH > 1000 and SPH < 2500 and prediction1[0] == 70):
+                SuggestedPrediction = "Quad-Core(4)"  # bronze
+            elif (SPH > 2500 and SPH < 10000 and prediction1[0] == 70):
+                SuggestedPrediction = "Hexa-Core(6)"  # silver
+            elif (SPH > 100000 and prediction1[0] == 70):
+                SuggestedPrediction = "Octa-Core(8)"  # gold
 
             dictionary = {
                 "id": "62f3575ab51f8a773cde8ed1",
@@ -387,23 +388,23 @@ def prediction():
 
             prediction_pdf,prediction_pdf1 = YesPDFPredictionData(SPH)
 
-            if (prediction_pdf1[0] >= 100 or prediction_pdf >= 100):
-                prediction_pdf[0] = 100
-                prediction_pdf1[0] = 100
+            if (prediction_pdf1[0] >= 70 or prediction_pdf >= 70):
+                prediction_pdf[0] = 70
+                prediction_pdf1[0] = 70
             if (prediction_pdf1[0] <= 0 or prediction_pdf[0] <= 0):
                 prediction_pdf[0][0] = 0
                 prediction_pdf1[0][0] = 0
             # print("UOM",prediction_pdf1[0])
 
 
-            if (SPH > 100 and SPH<1000 and  prediction_pdf[0] ==100):
-                SuggestedPrediction = "Bronze" #free
-            elif (SPH > 1000 and SPH<2500 and prediction_pdf[0] ==100 ):
-                SuggestedPrediction = "Silver" #bronze
-            elif (SPH > 2500 and SPH<10000 and prediction_pdf[0] ==100):
-                SuggestedPrediction = "Gold"  #silver
-            elif (SPH > 100000 and prediction_pdf[0] ==100):
-                SuggestedPrediction = "Enterprise" #gold
+            if (SPH > 200 and SPH<500):
+                SuggestedPrediction = "Dual-Core(2)" #free
+            elif (SPH > 500 and SPH<1000 and prediction_pdf[0] == 70):
+                SuggestedPrediction = "Quad-Core(4)" #bronze
+            elif (SPH > 1000 and SPH<1500 and prediction_pdf[0] == 70):
+                SuggestedPrediction = "Hexa-Core(6)"  #silver
+            elif (SPH > 1500 and prediction_pdf[0] ==70):
+                SuggestedPrediction = "Octa-Core(8)" #gold
 
             print("Suggested: ",SuggestedPrediction)
 
@@ -447,6 +448,19 @@ def prediction():
             lastValue = rabbitmqReceiver.x
             pdfValue = rabbitmqReceiver.y
             paymentSystem = rabbitmqReceiver.z
+
+            if(paymentSystem == 1):
+                paymentSystem="Single-Core"
+            elif(paymentSystem == 2):
+                paymentSystem = "Dual-Core(2)"
+            elif (paymentSystem == 4):
+                paymentSystem = "Quad-Core(4)"
+            elif (paymentSystem == 6):
+                paymentSystem = "Hexa-Core(6)"
+            elif (paymentSystem == 8):
+                paymentSystem = "Octa-Core(8)"
+
+
             DataGenerator.main(paymentSystem)
             Seperate()
             main_(lastValue, pdfValue, paymentSystem)
@@ -459,9 +473,10 @@ def prediction():
                 Seperate()
                 if(file["IsPdfSend"] == 0):
                     nopdf,nopdf1 = NoPDFPredictionData(file["SPH"])
+
                     dictionary = {
-                        "UOM": nopdf[0][0],
-                        "UOC": nopdf1[0][0],
+                        "memory": nopdf[0][0],
+                        "cpu": nopdf1[0][0],
                     }
 
                     out_file = open("Suggested.json", "w")
@@ -471,16 +486,16 @@ def prediction():
                 else:
                     pdf, pdf1 = YesPDFPredictionData(file["SPH"])
                     dictionary = {
-                        "UOM": pdf1[0][0],
-                        "UOC": pdf[0][0],
+                        "memory": pdf1[0][0],
+                        "cpu": pdf[0][0],
                     }
                     out_file = open("Suggested.json", "w")
                     json_object = json.dump(dictionary, out_file, indent=6)
                     out_file.close()
             else:
                 dictionary = {
-                    "UOM": 0,
-                    "UOC": 0,
+                    "memory": 0,
+                    "cpu": 0,
                 }
                 out_file = open("Suggested.json", "w")
                 json_object = json.dump(dictionary, out_file, indent=6)

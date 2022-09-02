@@ -8,10 +8,10 @@ datalistSPH = []
 dataListUOM = []
 dataListUOC = []
 dataListPDF = []
-dataListWSPH = []
-dataListWUOM = []
-dataListWUOC = []
 dataListUser = []
+dataListCoreCpu = []
+dataListCoreMemory = []
+
 user ="62f3575ab51f8a773cde8ed1"
 
 
@@ -19,16 +19,16 @@ def main(payment):
 
     Submission = 0
 
-    if (payment == "Free"):
-        Submission = 100
-    elif (payment == "Bronze"):
+    if (payment == "Single-Core"):
+        Submission = 200
+    elif (payment == "Dual-Core(2)"):
+        Submission = 500
+    elif (payment == "Quad-Core(4)"):
         Submission = 1000
-    elif (payment == "Silver"):
-        Submission = 2500
-    elif (payment == "Gold"):
-        Submission = 10000
-    elif (payment == "Enterprise"):
-        Submission = 100000
+    elif (payment == "Hexa-Core(6)"):
+        Submission = 1500
+    elif (payment == "Octa-Core(8)"):
+        Submission = 4000
 
 
     sph1 = (Submission * 25) / 100
@@ -38,7 +38,6 @@ def main(payment):
 
 
     for i in range(300):
-
         SPH = round(random.randint(1, int(Submission)))
         PDF = round(random.randint(0,1))
         dataListUser.append(user)
@@ -46,24 +45,32 @@ def main(payment):
         if( SPH>0 and SPH<=sph1):
             UOM = round(random.uniform(0,25),1)
             UOC = round(random.uniform(0,25),1)
+            Core = round(random.randint(1,2))
+            dataListCoreCpu.append(Core)
             datalistSPH.append(SPH)
             dataListUOM.append(UOM)
             dataListUOC.append(UOC)
         elif((SPH>sph1 and SPH<=sph2)):
             UOM = round(random.uniform(25, 50), 1)
             UOC = round(random.uniform(25, 50), 1)
+            Core = round(random.randint(2, 4))
+            dataListCoreCpu.append(Core)
             datalistSPH.append(SPH)
             dataListUOM.append(UOM)
             dataListUOC.append(UOC)
         elif(SPH>sph2 and SPH<=sph3):
             UOM = round(random.uniform(50, 75), 1)
             UOC = round(random.uniform(50, 75), 1)
+            Core = round(random.randint(4, 6))
+            dataListCoreCpu.append(Core)
             datalistSPH.append(SPH)
             dataListUOM.append(UOM)
             dataListUOC.append(UOC)
         elif(SPH>sph3 and SPH<=sph4):
             UOM = round(random.uniform(75, 100), 1)
             UOC = round(random.uniform(75, 100), 1)
+            Core = round(random.randint(6, 8))
+            dataListCoreCpu.append(Core)
             datalistSPH.append(SPH)
             dataListUOM.append(UOM)
             dataListUOC.append(UOC)
@@ -72,11 +79,11 @@ def main(payment):
         myfile.truncate(0)
         myfile.close()
 
-        d = [dataListUser, datalistSPH, dataListUOM, dataListUOC, dataListPDF]
+        d = [dataListUser, datalistSPH, dataListUOM, dataListUOC, dataListPDF,dataListCoreCpu]
         export_data = zip_longest(*d, fillvalue='')
         with open('dataSet.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
             wr = csv.writer(myfile)
-            wr.writerow(("UserId", "SPH", "UOM", "UOC", "PDF"))
+            wr.writerow(("UserId", "SPH", "UOM", "UOC", "PDF","CORE"))
             wr.writerows(export_data)
         myfile.close()
 
@@ -85,6 +92,7 @@ def main(payment):
     dataListUOM.clear()
     dataListUOC.clear()
     dataListPDF.clear()
+    dataListCoreCpu.clear()
 
 # dakikada kaç submission aldığı
 # kullandığı memory
