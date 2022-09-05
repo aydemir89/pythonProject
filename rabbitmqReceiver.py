@@ -22,10 +22,10 @@ def main():
             json_object = json.loads(body)
             global x
             global y
-            global z
+            #global z
             x = json_object["SPH"]
             y = json_object["IsPdfSend"]
-            z = json_object["cpuCore"]
+            #z = json_object["cpuCore"]
             global isChanged
             isChanged = True
 

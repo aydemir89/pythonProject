@@ -1,12 +1,12 @@
 {
       "id": "62f3575ab51f8a773cde8ed1",
-      "SPH": 154,
-      "UOM": 20.200187178740407,
-      "UOC": 19.729654228601024,
+      "SPH": 3650,
+      "UOM": 70.0,
+      "UOC": 70.0,
       "IsPdfSend": 1,
-      "paymentSystem": "Quad-Core(4)",
-      "usingRAM": "8GB",
-      "SuggestedPayment": "Quad-Core(4)",
-      "SuggestedRam": "8GB",
-      "CreatedAt": "05/09/2022 10:10:17"
+      "paymentSystem": "Octa-Core(8)",
+      "usingRAM": "32GB",
+      "SuggestedPayment": "Octa-Core(8)",
+      "SuggestedRam": "32GB",
+      "CreatedAt": "05/09/2022 11:36:05"
 }

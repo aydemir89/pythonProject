@@ -447,32 +447,26 @@ def prediction():
 
     while (True):
         time.sleep(0.1)
-        #SPH = int(input("Enter the SPH you want to predict="))
-        #print(f"Submission per hour: {SPH}!")
-
-        #IsPdfSend = int(input("Will you send the forms as pdf?="))
-        #print(f"PDF: {IsPdfSend}!")
 
         if (lastValue != rabbitmqReceiver.x or pdfValue != rabbitmqReceiver.y):
 
             time.sleep(1)
             lastValue = rabbitmqReceiver.x
             pdfValue = rabbitmqReceiver.y
-            paymentSystem = rabbitmqReceiver.z
-
-            if(paymentSystem == 1):
+            paymentSystem = " "
+            if(lastValue <= 200 ):
                 paymentSystem="Single-Core"
                 usageRAM = "2GB"
-            elif(paymentSystem == 2):
+            elif(lastValue > 200 and lastValue <=450 ):
                 paymentSystem = "Dual-Core(2)"
                 usageRAM = "4GB"
-            elif (paymentSystem == 4):
+            elif (lastValue > 450 and lastValue <=1000 ):
                 paymentSystem = "Quad-Core(4)"
                 usageRAM = "8GB"
-            elif (paymentSystem == 6):
+            elif (lastValue > 1000 and lastValue <=1500):
                 paymentSystem = "Hexa-Core(6)"
                 usageRAM = "16GB"
-            elif (paymentSystem == 8):
+            elif (lastValue > 1500):
                 paymentSystem = "Octa-Core(8)"
                 usageRAM = "32GB"
 
