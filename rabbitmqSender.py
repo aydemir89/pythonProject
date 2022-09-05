@@ -11,10 +11,13 @@ def main():
     def channel(alive):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
         channel = connection.channel()
-        channel.queue_declare(queue="hello11")
+        channel.queue_declare(queue="hello12")
         with open('data.json') as file:
             data = json.load(file)
-        channel.basic_publish(exchange='', routing_key='hello11', body=json.dumps(data),mandatory=False)
+        with open('Suggested.json') as f:
+            suggested = json.load(f)
+        c = dict(data.items() | suggested.items())
+        channel.basic_publish(exchange='', routing_key='hello12', body=json.dumps(c),mandatory=False)
         print(" [x] Sent 'prediction sent")
         channel.stop_consuming()
         connection.close()

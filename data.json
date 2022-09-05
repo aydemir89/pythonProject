@@ -1,8 +1,12 @@
 {
       "id": "62f3575ab51f8a773cde8ed1",
-      "SPH": 20,
-      "UOM": 0.0,
-      "UOC": 0.0,
-      "IsPdfSend": 0,
-      "CreatedAt": "24/08/2022 14:02:03"
+      "SPH": 3650,
+      "UOM": 70.0,
+      "UOC": 70.0,
+      "IsPdfSend": 1,
+      "paymentSystem": "Octa-Core(8)",
+      "usingRAM": "32GB",
+      "SuggestedPayment": "Octa-Core(8)",
+      "SuggestedRam": "32GB",
+      "CreatedAt": "05/09/2022 11:36:05"
 }

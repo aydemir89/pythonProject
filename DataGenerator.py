@@ -1,107 +1,98 @@
+
 from itertools import zip_longest
 import  random
 import csv
-import time
-from datetime import datetime
-import json
-import bson
-
-
 
 
 datalistSPH = []
 dataListUOM = []
 dataListUOC = []
 dataListPDF = []
-dataListWSPH = []
-dataListWUOM = []
-dataListWUOC = []
-
-
-
-
-
 dataListUser = []
+dataListCoreCpu = []
+dataListCoreMemory = []
+
 user ="62f3575ab51f8a773cde8ed1"
 
 
-for i in range(300):
+def main(payment):
 
-    SPH = round(random.randint(50, 200))
-    PDF = round(random.randint(0,1))
-    dataListUser.append(user)
-    dataListPDF.append(PDF)
-    if(SPH>50 and SPH <= 100):
-        UOM = round(random.uniform(0,25),1)
-        UOC = round(random.uniform(0,25),1)
-        datalistSPH.append(SPH)
-        dataListUOM.append(UOM)
-        dataListUOC.append(UOC)
-    elif(SPH>100 and SPH<=150):
-        UOM = round(random.uniform(25, 50), 1)
-        UOC = round(random.uniform(25, 50), 1)
-        datalistSPH.append(SPH)
-        dataListUOM.append(UOM)
-        dataListUOC.append(UOC)
-    elif(SPH>150 and SPH<=200):
-        UOM = round(random.uniform(50, 75), 1)
-        UOC = round(random.uniform(50, 75), 1)
-        datalistSPH.append(SPH)
-        dataListUOM.append(UOM)
-        dataListUOC.append(UOC)
-    elif (SPH > 200 and SPH <= 250):
-        UOM = round(random.uniform(75, 100), 1)
-        UOC = round(random.uniform(75, 100), 1)
-        datalistSPH.append(SPH)
-        dataListUOM.append(UOM)
-        dataListUOC.append(UOC)
-    else:
-        UOM = round(random.uniform(75, 100), 1)
-        UOC = round(random.uniform(75, 100), 1)
-        datalistSPH.append(SPH)
-        dataListUOM.append(UOM)
-        dataListUOC.append(UOC)
+    Submission = 0
+
+    if (payment == "Single-Core"):
+        Submission = 200
+    elif (payment == "Dual-Core(2)"):
+        Submission = 500
+    elif (payment == "Quad-Core(4)"):
+        Submission = 1000
+    elif (payment == "Hexa-Core(6)"):
+        Submission = 1500
+    elif (payment == "Octa-Core(8)"):
+        Submission = 4000
 
 
+    sph1 = (Submission * 25) / 100
+    sph2 = (Submission * 50) / 100
+    sph3 = (Submission * 75) / 100
+    sph4 = (Submission * 100) / 100
 
 
+    for i in range(300):
+        SPH = round(random.randint(1, int(Submission)))
+        PDF = round(random.randint(0,1))
+        dataListUser.append(user)
+        dataListPDF.append(PDF)
+        if( SPH>0 and SPH<=sph1):
+            UOM = round(random.uniform(0,25),1)
+            UOC = round(random.uniform(0,25),1)
+            Core = round(random.randint(1,2))
+            dataListCoreCpu.append(Core)
+            datalistSPH.append(SPH)
+            dataListUOM.append(UOM)
+            dataListUOC.append(UOC)
+        elif((SPH>sph1 and SPH<=sph2)):
+            UOM = round(random.uniform(25, 50), 1)
+            UOC = round(random.uniform(25, 50), 1)
+            Core = round(random.randint(2, 4))
+            dataListCoreCpu.append(Core)
+            datalistSPH.append(SPH)
+            dataListUOM.append(UOM)
+            dataListUOC.append(UOC)
+        elif(SPH>sph2 and SPH<=sph3):
+            UOM = round(random.uniform(50, 75), 1)
+            UOC = round(random.uniform(50, 75), 1)
+            Core = round(random.randint(4, 6))
+            dataListCoreCpu.append(Core)
+            datalistSPH.append(SPH)
+            dataListUOM.append(UOM)
+            dataListUOC.append(UOC)
+        elif(SPH>sph3 and SPH<=sph4):
+            UOM = round(random.uniform(75, 100), 1)
+            UOC = round(random.uniform(75, 100), 1)
+            Core = round(random.randint(6, 8))
+            dataListCoreCpu.append(Core)
+            datalistSPH.append(SPH)
+            dataListUOM.append(UOM)
+            dataListUOC.append(UOC)
 
+        myfile = open('dataSet.csv', 'r+')
+        myfile.truncate(0)
+        myfile.close()
 
-"""for i in range(100):
-    WSPH = round(random.randint(200,500))
-    
-    if(WSPH>200 and WSPH <= 250):
-        WUOM = round(random.uniform(0,25),1)
-        WUOC = round(random.uniform(0,25),1)
-        dataListWSPH.append(WSPH)
-        dataListUOM.append(WUOM)
-        dataListWUOC.append(WUOC)
-    elif(WSPH>250 and WSPH<=300):
-        WUOM = round(random.uniform(25,50),1)
-        WUOC = round(random.uniform(25,50),1)
-        dataListWSPH.append(WSPH)
-        dataListWUOM.append(WUOM)
-        dataListWUOC.append(WUOC)
-    elif(WSPH>300 and WSPH<=350):
-        WUOM = round(random.uniform(50, 75), 1)
-        WUOC = round(random.uniform(50, 75), 1)
-        dataListWSPH.append(WSPH)
-        dataListWUOM.append(WUOM)
-        dataListWUOC.append(WUOC)
-    elif (WSPH > 350 and WSPH <= 400):
-        WUOM = round(random.uniform(75, 100), 1)
-        WUOC = round(random.uniform(75, 100), 1)
-        dataListWSPH.append(WSPH)
-        dataListWUOM.append(WUOM)
-        dataListWUOC.append(WUOC)
-    else:
-        WUOM = round(random.uniform(75, 100), 1)
-        WUOC = round(random.uniform(75, 100), 1)
-        dataListWSPH.append(WSPH)
-        dataListWUOM.append(WUOM)
-        dataListWUOC.append(WUOC)"""
+        d = [dataListUser, datalistSPH, dataListUOM, dataListUOC, dataListPDF,dataListCoreCpu]
+        export_data = zip_longest(*d, fillvalue='')
+        with open('dataSet.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
+            wr = csv.writer(myfile)
+            wr.writerow(("UserId", "SPH", "UOM", "UOC", "PDF","CORE"))
+            wr.writerows(export_data)
+        myfile.close()
 
-
+    dataListUser.clear()
+    datalistSPH.clear()
+    dataListUOM.clear()
+    dataListUOC.clear()
+    dataListPDF.clear()
+    dataListCoreCpu.clear()
 
 # dakikada kaç submission aldığı
 # kullandığı memory
@@ -112,22 +103,6 @@ for i in range(300):
 
 
 
-d = [dataListUser,datalistSPH, dataListUOM,dataListUOC,dataListPDF]
-export_data = zip_longest(*d, fillvalue = '')
-with open('dataSet.csv', 'w', encoding="ISO-8859-1", newline='') as myfile:
-      wr = csv.writer(myfile)
-      wr.writerow(("UserId","SPH", "UOM","UOC", "PDF"))
-      wr.writerows(export_data)
-myfile.close()
 
 
 
-"""
-d2 = [dataListUser,dataListWSPH, dataListWUOM,dataListWUOC]
-export_data2 = zip_longest(*d2, fillvalue = '')
-with open('WantOfServers.csv', 'w', encoding="ISO-8859-1", newline='') as myfile2:
-    wr2 = csv.writer(myfile2)
-    wr2.writerow(("UserId","WSPH", "WUOM", "WUOC"))
-    wr2.writerows(export_data2)
-myfile2.close()
-"""
