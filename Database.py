@@ -35,8 +35,8 @@ def main():
 
 
             add_usageofserver = ("INSERT INTO usageserver "
-                            "(id, SPH, UOM, UOC, IsPdfSend,paymentSystem,SuggestedPayment,memory,cpu,CreatedAt)"
-                            "VALUES (%(id)s, %(SPH)s, %(UOM)s, %(UOC)s, %(IsPdfSend)s, %(paymentSystem)s, %(SuggestedPayment)s, %(memory)s, %(cpu)s, %(CreatedAt)s)")
+                            "(id, SPH, UOM, UOC, IsPdfSend,paymentSystem,usingRAM,SuggestedPayment,SuggestedRam,memory,cpu,CreatedAt)"
+                            "VALUES (%(id)s, %(SPH)s, %(UOM)s, %(UOC)s, %(IsPdfSend)s, %(paymentSystem)s,%(usingRAM)s, %(SuggestedPayment)s,%(SuggestedRam)s, %(memory)s, %(cpu)s, %(CreatedAt)s)")
 
             cursor.execute(add_usageofserver, c)
             connection.commit()

@@ -1,9 +1,7 @@
 from typing import Optional
 import mysql.connector
 import mysql
-import typer
 import csv
-import json
 import time
 from datetime import datetime
 import matplotlib.pyplot as plt
@@ -18,12 +16,9 @@ from sklearn.model_selection import train_test_split
 import rabbitmqSender
 import rabbitmqReceiver
 import DataGenerator
-
-
 from rich.table import Table
 from rich.console import Console
 import json
-
 import Database
 
 
@@ -53,7 +48,9 @@ def show(table):
     table.add_column("CPU", min_width=12, justify="center")
     table.add_column("IsPdfSend", min_width=12, justify="center")
     table.add_column("Using CPU Core", min_width=12, justify="center")
+    table.add_column("Usage RAM", min_width=12, justify="center")
     table.add_column("Suggested CPU Core", min_width=12, justify="center")
+    table.add_column("Suggested RAM", min_width=12, justify="center")
     table.add_column("Memory", min_width=12, justify="center")
     table.add_column("CPU", min_width=12, justify="center")
     table.add_column("CreatedAt", min_width=12, justify="center")
@@ -78,7 +75,7 @@ def printTable(table):
 
     table.add_row(f'[cyan]{1}[/cyan]', f'[cyan]{data["id"]}[/cyan]', f'[green]{data["SPH"]}[/green]',
                   f'[green]{data["UOM"]}[/green]', f'[green]{data["UOC"]}[/green]',
-                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]', f'[green]{data["SuggestedPayment"]}[/green]', f'[green]{sd["memory"]}[/green]',f'[green]{sd["cpu"]}[/green]', f'[green]{data["CreatedAt"]}[/green]')
+                  f'[green]{data["IsPdfSend"]}[/green]', f'[green]{data["paymentSystem"]}[/green]',f'[green]{data["usingRAM"]}[/green]', f'[green]{data["SuggestedPayment"]}[/green]', f'[green]{data["SuggestedRam"]}[/green]', f'[green]{sd["memory"]}[/green]',f'[green]{sd["cpu"]}[/green]', f'[green]{data["CreatedAt"]}[/green]')
 
     console.print(table)
 
@@ -97,7 +94,7 @@ def AllPredictionRecords(table):
     show(table)
 
     for idx, row in enumerate(records, start=1):
-        table.add_row(str(idx), f'[cyan]{row[0]}[/cyan]', f'[green]{row[1]}[/green]',f'[cyan]{row[2]}[/cyan]', f'[green]{row[3]}[/green]',f'[green]{row[4]}[/green]',f'[green]{row[5]}[/green]',f'[green]{row[6]}[/green]',f'[green]{row[7]}[/green]',f'[green]{row[8]}[/green]',f'[green]{row[9]}[/green]')
+        table.add_row(str(idx), f'[cyan]{row[0]}[/cyan]', f'[green]{row[1]}[/green]',f'[cyan]{row[2]}[/cyan]', f'[green]{row[3]}[/green]',f'[green]{row[4]}[/green]',f'[green]{row[5]}[/green]',f'[green]{row[6]}[/green]',f'[green]{row[7]}[/green]',f'[green]{row[8]}[/green]',f'[green]{row[9]}[/green]',f'[green]{row[10]}[/green]',f'[green]{row[11]}[/green]')
 
     console.print(table)
 
@@ -161,6 +158,7 @@ def YesPDFPredictionData(SPH):
     # print("user when generate pdf file")
     # print("UOC",prediction_pdf[0])
     prediction_pdf1[0] = prediction_pdf1[0] / a
+
     """ plt.figure(figsize=(10, 10))
     sns.countplot(x='SPH', data=pdf_dataset)
     plt.title('Submission per hour Distribution')
@@ -176,7 +174,7 @@ def YesPDFPredictionData(SPH):
     plt.title('Usage of cpu')
     plt.show()
 """
-    return prediction_pdf,prediction_pdf1
+    return prediction_pdf, prediction_pdf1
 
 def NoPDFPredictionData(SPH):
     prediction1 = 0
@@ -272,7 +270,7 @@ def NoPDFPredictionData(SPH):
     plt.title('Usage of cpu')
     plt.show()"""
 
-    return prediction,prediction1
+    return prediction, prediction1
 
 @app.command()
 def prediction():
@@ -342,9 +340,10 @@ def prediction():
             # write the data
             writer.writerows(dataRowPdf0)
 
-    def main_(SPH, IsPdfSend, paymentSystem):
+    def main_(SPH, IsPdfSend, paymentSystem, usageRAM):
 
         SuggestedPrediction = paymentSystem
+        SuggestedusageRAM = usageRAM
 
         if(IsPdfSend == 0):
 
@@ -357,15 +356,19 @@ def prediction():
                 prediction1[0] = 0
                 prediction[0] = 0
 
-
-            if (SPH > 100 and SPH < 1000 and prediction1[0] == 70):
-                SuggestedPrediction = "Dual-Core(2)"  # free
-            elif (SPH > 1000 and SPH < 2500 and prediction1[0] == 70):
-                SuggestedPrediction = "Quad-Core(4)"  # bronze
-            elif (SPH > 2500 and SPH < 10000 and prediction1[0] == 70):
-                SuggestedPrediction = "Hexa-Core(6)"  # silver
-            elif (SPH > 100000 and prediction1[0] == 70):
-                SuggestedPrediction = "Octa-Core(8)"  # gold
+            if (prediction1[0]  == 70):
+                if (SPH < 350):
+                    SuggestedPrediction = "Dual-Core(2)"
+                    SuggestedusageRAM = "4GB"
+                elif (SPH > 350 and SPH < 650):
+                    SuggestedPrediction = "Quad-Core(4)"
+                    SuggestedusageRAM = "8GB"
+                elif (SPH > 650 and SPH < 950):
+                    SuggestedPrediction = "Hexa-Core(6)"
+                    SuggestedusageRAM = "16GB"
+                elif (SPH > 950):
+                    SuggestedPrediction = "Octa-Core(8)"
+                    SuggestedusageRAM = "32GB"
 
             dictionary = {
                 "id": "62f3575ab51f8a773cde8ed1",
@@ -374,7 +377,9 @@ def prediction():
                 "UOC": prediction[0][0],
                 "IsPdfSend": 0,
                 "paymentSystem": paymentSystem,
+                "usingRAM": usageRAM,
                 "SuggestedPayment": SuggestedPrediction,
+                "SuggestedRam": SuggestedusageRAM,
                 "CreatedAt": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
 
@@ -396,15 +401,19 @@ def prediction():
                 prediction_pdf1[0][0] = 0
             # print("UOM",prediction_pdf1[0])
 
-
-            if (SPH > 200 and SPH<500):
-                SuggestedPrediction = "Dual-Core(2)" #free
-            elif (SPH > 500 and SPH<1000 and prediction_pdf[0] == 70):
-                SuggestedPrediction = "Quad-Core(4)" #bronze
-            elif (SPH > 1000 and SPH<1500 and prediction_pdf[0] == 70):
-                SuggestedPrediction = "Hexa-Core(6)"  #silver
-            elif (SPH > 1500 and prediction_pdf[0] ==70):
-                SuggestedPrediction = "Octa-Core(8)" #gold
+            if(prediction_pdf[0] == 70):
+                if (SPH<350):
+                    SuggestedPrediction = "Dual-Core(2)"
+                    SuggestedusageRAM = "4GB"
+                elif (SPH > 350 and SPH < 650):
+                    SuggestedPrediction = "Quad-Core(4)"
+                    SuggestedusageRAM = "8GB"
+                elif (SPH > 650 and SPH<950):
+                    SuggestedPrediction = "Hexa-Core(6)"
+                    SuggestedusageRAM = "16GB"
+                elif (SPH > 950 ):
+                    SuggestedPrediction = "Octa-Core(8)"
+                    SuggestedusageRAM = "32GB"
 
             print("Suggested: ",SuggestedPrediction)
 
@@ -415,7 +424,9 @@ def prediction():
                 "UOC": prediction_pdf[0][0],
                 "IsPdfSend": 1,
                 "paymentSystem": paymentSystem,
+                "usingRAM": usageRAM,
                 "SuggestedPayment": SuggestedPrediction,
+                "SuggestedRam": SuggestedusageRAM,
                 "CreatedAt": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
 
@@ -451,19 +462,24 @@ def prediction():
 
             if(paymentSystem == 1):
                 paymentSystem="Single-Core"
+                usageRAM = "2GB"
             elif(paymentSystem == 2):
                 paymentSystem = "Dual-Core(2)"
+                usageRAM = "4GB"
             elif (paymentSystem == 4):
                 paymentSystem = "Quad-Core(4)"
+                usageRAM = "8GB"
             elif (paymentSystem == 6):
                 paymentSystem = "Hexa-Core(6)"
+                usageRAM = "16GB"
             elif (paymentSystem == 8):
                 paymentSystem = "Octa-Core(8)"
+                usageRAM = "32GB"
 
 
             DataGenerator.main(paymentSystem)
             Seperate()
-            main_(lastValue, pdfValue, paymentSystem)
+            main_(lastValue, pdfValue, paymentSystem,usageRAM)
 
             predictionData = open('data.json')
             file = json.load(predictionData)
@@ -473,6 +489,13 @@ def prediction():
                 Seperate()
                 if(file["IsPdfSend"] == 0):
                     nopdf,nopdf1 = NoPDFPredictionData(file["SPH"])
+
+                    if (nopdf >= 70 or nopdf1 >= 70):
+                        nopdf1[0] = 70
+                        nopdf[0] = 70
+                    if (nopdf[0] <= 0 or nopdf1[0] <= 0):
+                        nopdf[0][0] = 0
+                        nopdf1[0][0] = 0
 
                     dictionary = {
                         "memory": nopdf[0][0],
@@ -485,6 +508,12 @@ def prediction():
 
                 else:
                     pdf, pdf1 = YesPDFPredictionData(file["SPH"])
+                    if (pdf1 >= 70 or pdf >= 70):
+                        pdf1[0] = 70
+                        pdf[0] = 70
+                    if (pdf[0] <= 0 or pdf1[0] <= 0):
+                        pdf1[0][0] = 0
+                        pdf[0][0] = 0
                     dictionary = {
                         "memory": pdf1[0][0],
                         "cpu": pdf[0][0],
@@ -512,7 +541,7 @@ def prediction():
 
 
 
-
+@app.command()
 def SaveDatabase():
     delete = typer.confirm("do you want to save data")
     table = Table(show_header=True, header_style="bold blue", show_lines=True)
