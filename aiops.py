@@ -363,10 +363,10 @@ def prediction():
                 elif (SPH > 350 and SPH < 650):
                     SuggestedPrediction = "Quad-Core(4)"
                     SuggestedusageRAM = "8GB"
-                elif (SPH > 650 and SPH < 950):
+                elif (SPH > 650 and SPH < 3200):
                     SuggestedPrediction = "Hexa-Core(6)"
                     SuggestedusageRAM = "16GB"
-                elif (SPH > 950):
+                elif (SPH > 3200):
                     SuggestedPrediction = "Octa-Core(8)"
                     SuggestedusageRAM = "32GB"
 
@@ -392,7 +392,7 @@ def prediction():
         elif(IsPdfSend == 1):
 
             prediction_pdf,prediction_pdf1 = YesPDFPredictionData(SPH)
-
+            print(prediction_pdf)
             if (prediction_pdf1[0] >= 70 or prediction_pdf >= 70):
                 prediction_pdf[0] = 70
                 prediction_pdf1[0] = 70
@@ -454,6 +454,7 @@ def prediction():
             lastValue = rabbitmqReceiver.x
             pdfValue = rabbitmqReceiver.y
             paymentSystem = " "
+
             if(lastValue <= 200 ):
                 paymentSystem="Single-Core"
                 usageRAM = "2GB"
@@ -463,10 +464,10 @@ def prediction():
             elif (lastValue > 450 and lastValue <=1000 ):
                 paymentSystem = "Quad-Core(4)"
                 usageRAM = "8GB"
-            elif (lastValue > 1000 and lastValue <=1500):
+            elif (lastValue > 1000 and lastValue <=3600):
                 paymentSystem = "Hexa-Core(6)"
                 usageRAM = "16GB"
-            elif (lastValue > 1500):
+            elif (lastValue > 3600):
                 paymentSystem = "Octa-Core(8)"
                 usageRAM = "32GB"
 
@@ -530,9 +531,42 @@ def prediction():
             processBar()
             table = Table(show_header=True, header_style="bold blue", show_lines=True)
             printTable(table)
-
+            Pricing(file["SuggestedPayment"])
             SaveDatabase()
 
+
+def Pricing(paymentSystem):
+    table = Table(show_header=True, header_style="bold blue", show_lines=True)
+    table.add_column("#", style="dim", width=3, justify="center")
+    table.add_column("Machine Type", min_width=20, justify="center")
+    table.add_column("CPU", min_width=12, justify="center")
+    table.add_column("Price(USD)", min_width=12, justify="center")
+
+
+    MachineType = ""
+    price = 0
+
+
+    if ( paymentSystem == "Single-Core"):
+        MachineType = "n1-standart-1"
+        price = 0.047
+    elif (paymentSystem == "Dual-Core(2)"):
+        MachineType = "n1-standart-2"
+        price = 0.094
+    elif (paymentSystem == "Quad-Core(4)"):
+        MachineType = "n1-standart-4"
+        price = 0.189
+    elif (paymentSystem == "Hexa-Core(6)"):
+        MachineType = "n1-standart-6"
+        price = 0.379
+    elif (paymentSystem == "Octa-Core(8)"):
+        MachineType = "n1-standart-8"
+        price = 0.759
+
+    table.add_row(f'[cyan]{1}[/cyan]', f'[cyan]{MachineType}[/cyan]', f'[green]{paymentSystem}[/green]',
+                  f'[green]{price}[/green]')
+
+    console.print(table)
 
 
 @app.command()
