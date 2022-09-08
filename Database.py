@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 import json
 import sys
-import time,os
+import os
 connection = ""
 SenderisChanged = False
 

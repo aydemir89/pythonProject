@@ -392,7 +392,7 @@ def prediction():
         elif(IsPdfSend == 1):
 
             prediction_pdf,prediction_pdf1 = YesPDFPredictionData(SPH)
-            print(prediction_pdf)
+
             if (prediction_pdf1[0] >= 70 or prediction_pdf >= 70):
                 prediction_pdf[0] = 70
                 prediction_pdf1[0] = 70
@@ -402,16 +402,16 @@ def prediction():
             # print("UOM",prediction_pdf1[0])
 
             if(prediction_pdf[0] == 70):
-                if (SPH<350):
+                if (SPH < 350):
                     SuggestedPrediction = "Dual-Core(2)"
                     SuggestedusageRAM = "4GB"
                 elif (SPH > 350 and SPH < 650):
                     SuggestedPrediction = "Quad-Core(4)"
                     SuggestedusageRAM = "8GB"
-                elif (SPH > 650 and SPH<950):
+                elif (SPH > 650 and SPH < 3200):
                     SuggestedPrediction = "Hexa-Core(6)"
                     SuggestedusageRAM = "16GB"
-                elif (SPH > 950 ):
+                elif (SPH > 3200):
                     SuggestedPrediction = "Octa-Core(8)"
                     SuggestedusageRAM = "32GB"
 

@@ -1,6 +1,6 @@
 
 from itertools import zip_longest
-import  random
+import random
 import csv
 
 
@@ -26,7 +26,7 @@ def main(payment):
     elif (payment == "Quad-Core(4)"):
         Submission = 1000
     elif (payment == "Hexa-Core(6)"):
-        Submission = 1500
+        Submission = 2000
     elif (payment == "Octa-Core(8)"):
         Submission = 5500
 
